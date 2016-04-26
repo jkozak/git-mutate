@@ -12,9 +12,24 @@ tempdir=$(mktemp -d) || die "$0: can't create temp dir"
 
 cd $tempdir
 
-# +++ parse cmd line, get -m $msg and -c $cmd +++
-cmd=/tmp/test0
-msg=blah
+while test $# -gt 1
+do
+    case "$1" in
+        -c|--command)
+            cmd=$2
+            shift
+            ;;
+        -m|--message)
+            msg=$2
+            shift
+            ;;
+        default)
+            die "$0: unknown arg: $1"
+    esac
+    shift
+done
+
+test -z $cmd && die "$0: specify a command"
 
 set -- $cmd
 cmd0=$1
@@ -41,11 +56,6 @@ transcript="#+BEGIN_EXAMPLE
 $ $cmd
 $output
 #+END_EXAMPLE"
-
-echo git commit -m "mutate: \"$cmd\"
-$msg
-$mutation
-$transcript"
 
 if test $rc -eq 0
 then
