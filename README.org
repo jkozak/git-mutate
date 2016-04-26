@@ -1,0 +1,72 @@
+#+TITLE:  README for git-mutate
+#+AUTHOR: John Kozak
+#+EMAIL:  jk@pookapictures.com
+
+* Description
+
+ =git-mutate= is a subcommand for =git=.  It is a variant on =commit=
+which captures the processes used to make the update and records them
+in the commit message.
+
+** Why would I want to do that?
+
+Normally, git manages repositories of source code and other text
+files - if you want to see what was actually done to implement the
+commit, you can examine the patch.
+
+But if you're managing binary files with git, deltas are unlikely to
+tell you much: you really just have the bald fact that some changes
+were made to some files.  =git-mutate= captures the commands that made
+those changes, which should give you rather a better idea of what was
+done.
+
+** Example
+
+Let's suppose I have just shot some hard-to-reshoot drone footage.  With
+trembling fingers, I extract the SDHC card and get the material into
+git annex and make sure there are multiple copies.  Then I try to play
+it back and it doesn't.  Oh dear.  Luckily, this is a well-known
+problem with the drone I am using and and there is a utility to fix it.
+
+- repository is at =~/drone-antics=
+- drone footage is in it at =raw/drone.mp4=
+- put the source of the utility in the repository at =utils/src/djifix.c=
+- run =git add utils/src/djifix.c=
+- run =git commit -m"add djifix source"=
+- create a shell-script =/tmp/fix-drone-footage=
+#+BEGIN_SRC sh
+#!/bin/sh
+set -e
+gcc -o ./djifix $GIT_MUTATE_WORKDIR/utils/src/djifix.c
+./djifix $GIT_MUTATE_WORKDIR/raw/drone.mp4
+mv drone-fixed.h264 $GIT_MUTATE_WORKDIR/raw/drone.mp4
+#+END_SRC
+- run =git mutate -m"repair the drone footage" -c /tmp/fix-drone-footage=
+
+We have now repaired the drone footage, and have a history of what was
+done to achieve that.
+
+* Installation
+
+* Operation
+
+ =git-mutate= runs a supplied command in a temporary directory, with an
+environment variable =GIT_MUTATE_WORKDIR= pointing to the working
+directory.  If the command succeeds (RC=0) the working tree is
+committed with the script or command captured in the commit message.
+
+* Notes
+
+The repository must be clean before =git-mutate= is run.
+
+To work nicely with =git-annex=, a version 6 repository is a good
+idea, so that the working tree contents are appropriately annexed
+automagically.
+
+* It would be nice to...
+
+...mark the commit in a low-level way, rather than by
+a message formatting convention.
+
+...have a facility whereby commits can be scanned to see if processes
+need to be re-run.

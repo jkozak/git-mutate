@@ -1,0 +1,62 @@
+#!/bin/sh
+
+. "$(git --exec-path)/git-sh-setup"
+
+require_work_tree_exists
+cd_to_toplevel
+workdir=$(pwd)
+
+test -n "$(git status --porcelain)" && die "$0: repo must be clean before mutate"
+
+tempdir=$(mktemp -d) || die "$0: can't create temp dir"
+
+cd $tempdir
+
+# +++ parse cmd line, get -m $msg and -c $cmd +++
+cmd=/tmp/test0
+msg=blah
+
+set -- $cmd
+cmd0=$1
+
+test -x $cmd0 || die "$0: $cmd0 is not an executable"
+
+if git ls-files $cmd0 --error-unmatch 2>/dev/null
+then
+    mutation=
+else
+    mutation="
+#+NAME: $cmd0
+#+BEGIN_SRC
+$(cat $cmd0)
+#+END_SRC
+
+"
+fi
+
+output=$(GIT_MUTATE_WORKDIR=$workdir sh -c $cmd)
+rc=$?
+
+transcript="#+BEGIN_EXAMPLE
+$ $cmd
+$output
+#+END_EXAMPLE"
+
+echo git commit -m "mutate: \"$cmd\"
+$msg
+$mutation
+$transcript"
+
+if test $rc -eq 0
+then
+    cd $workdir
+    test -n "$(git status --porcelain)" || die "$0: nothing has changed"
+    git add .
+    git commit -m "mutate: $cmd
+$msg
+$mutation
+$transcript"
+    echo rm -rf $tempdir
+else
+    die "$0: $cmd failed, tempdir: $tempdir"
+fi
