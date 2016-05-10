@@ -48,6 +48,9 @@ done to achieve that.
 
 * Installation
 
+ =yarn= is required for testing.  Run tests with =make test= at the
+top level.
+
 * Operation
 
  =git-mutate= runs a supplied command in a temporary directory, with an
@@ -57,7 +60,8 @@ committed with the script or command captured in the commit message.
 
 * Notes
 
-The repository must be clean before =git-mutate= is run.
+The repository must be clean before =git-mutate= is run unless
+=--no-check-clean= is specified.
 
 To work nicely with =git-annex=, a version 6 repository is a good
 idea, so that the working tree contents are appropriately annexed

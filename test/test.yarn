@@ -1,0 +1,59 @@
+Tests
+=====
+
+    SCENARIO sanity check
+    GIVEN a new repo
+    THEN repo is clean
+
+    SCENARIO simple mutation via external script
+    GIVEN a new repo
+    AND a mutation script that creates a file
+    WHEN git-mutate runs the script
+    THEN the file exists in the repo
+    AND a git commit entry contains the script
+    AND repo is clean
+
+    SCENARIO don't allow mutation of dirty repo
+    GIVEN a new repo
+    AND a mutation script that creates a file
+    AND a test file in the repo
+    THEN git-mutate fails
+
+Implementation
+==============
+
+    IMPLEMENTS GIVEN a new repo
+    mkdir "$DATADIR/repo"
+    cd "$DATADIR/repo"
+    git init
+
+    IMPLEMENTS GIVEN git-annex added to the repo
+    git annex init --version=6
+    git add .
+    git commit -m init
+
+    IMPLEMENTS GIVEN a test file in the repo
+    echo testtesttest > "$DATADIR/repo/test"
+
+    IMPLEMENTS GIVEN a mutation script that creates a file
+    echo '#!/bin/sh'                               > "$DATADIR/mutation"
+    echo 'echo xylema > $GIT_MUTATE_WORKDIR/file' >> "$DATADIR/mutation"
+    chmod +x "$DATADIR/mutation"
+
+    IMPLEMENTS WHEN git-mutate runs the script
+    cd "$DATADIR/repo"
+    "$SRCDIR/git-mutate" -c "$DATADIR/mutation" -m "make a file"
+
+    IMPLEMENTS THEN the file exists in the repo
+    test -e "$DATADIR/repo/file"
+
+    IMPLEMENTS THEN a git commit entry contains the script
+    cd "$DATADIR/repo"
+    git log|grep 'echo xylema'
+
+    IMPLEMENTS THEN repo is clean
+    (cd "$DATADIR/repo";test -z "$(git status --porcelain)")
+
+    IMPLEMENTS THEN git-mutate fails
+    cd "$DATADIR/repo"
+    ! "$SRCDIR/git-mutate" -c "$DATADIR/mutation" -m "make a file"
