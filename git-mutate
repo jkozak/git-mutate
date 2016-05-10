@@ -6,11 +6,7 @@ require_work_tree_exists
 cd_to_toplevel
 workdir=$(pwd)
 
-test -n "$(git status --porcelain)" && die "$0: repo must be clean before mutate"
-
-tempdir=$(mktemp -d) || die "$0: can't create temp dir"
-
-cd $tempdir
+check_clean=true
 
 while test $# -gt 1
 do
@@ -23,6 +19,9 @@ do
             msg=$2
             shift
             ;;
+        -C|--no-check-clean)
+            check_clean=false
+            ;;
         default)
             die "$0: unknown arg: $1"
     esac
@@ -30,6 +29,14 @@ do
 done
 
 test -z $cmd && die "$0: specify a command"
+
+if [ "$check_clean" = true ]
+then
+    test -n "$(git status --porcelain)" && die "$0: repo must be clean before mutate"
+fi
+
+tempdir=$(mktemp -d) || die "$0: can't create temp dir"
+cd $tempdir
 
 set -- $cmd
 cmd0=$1
