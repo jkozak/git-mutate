@@ -1,6 +1,6 @@
 #+TITLE:  README for git-mutate
 #+AUTHOR: John Kozak
-#+EMAIL:  jk@pookapictures.com
+#+EMAIL:  jk@xylema.org
 
 * Description
 
@@ -43,10 +43,12 @@ mv drone-fixed.h264 $GIT_MUTATE_WORKDIR/raw/drone.mp4
 #+END_SRC
 - run =git mutate -m"repair the drone footage" -c /tmp/fix-drone-footage=
 
-We have now repaired the drone footage, and have a history of what was
-done to achieve that.
+We have now repaired the drone footage in situ, and have a history of
+what was done to achieve that.
 
 * Installation
+
+Put =git-mutate= somewhere on your path.
 
  =yarn= is required for testing.  Run tests with =make test= at the
 top level.
@@ -64,13 +66,20 @@ The repository must be clean before =git-mutate= is run unless
 =--no-check-clean= is specified.
 
 To work nicely with =git-annex=, a version 6 repository is a good
-idea, so that the working tree contents are appropriately annexed
-automagically.
+idea, so that the working tree contents are automagically annexed or
+not as appropriate.
 
-* It would be nice to...
+* It would be nice to
 
-...mark the commit in a low-level way, rather than by
-a message formatting convention.
+Have a man page.
 
-...have a facility whereby commits can be scanned to see if processes
-need to be re-run.
+Mark the commit in a low-level way, rather than by a message
+formatting convention.
+
+Mutate commits give us provenance information: which inputs to which
+processes produced which outputs.  We can do lots with this
+information, e.g. see if processes might need to be re-run when their
+inputs have changed.
+
+Have a shell mode which captures or blocks references to stuff outside
+the repo.
