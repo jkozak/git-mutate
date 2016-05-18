@@ -31,16 +31,16 @@ problem with the drone I am using and and there is a utility to fix it.
 - repository is at =~/drone-antics=
 - drone footage is in it at =raw/drone.mp4=
 - put the source of the utility in the repository at =utils/src/djifix.c=
-- run =git add utils/src/djifix.c=
-- run =git commit -m"add djifix source"=
+- run src_sh[:exports code]{git add utils/src/djifix.c}
+- run src_sh[:exports code]{git commit -m'add djifix source'}
 - create a shell-script =/tmp/fix-drone-footage=
-#+BEGIN_SRC sh
-#!/bin/sh
-set -e
-gcc -o ./djifix $GIT_MUTATE_WORKDIR/utils/src/djifix.c
-./djifix $GIT_MUTATE_WORKDIR/raw/drone.mp4
-mv drone-fixed.h264 $GIT_MUTATE_WORKDIR/raw/drone.mp4
-#+END_SRC
+  #+BEGIN_SRC sh
+  #!/bin/sh
+  set -e
+  gcc -o ./djifix $GIT_MUTATE_WORKDIR/utils/src/djifix.c
+  ./djifix $GIT_MUTATE_WORKDIR/raw/drone.mp4
+  mv drone-fixed.h264 $GIT_MUTATE_WORKDIR/raw/drone.mp4
+  #+END_SRC
 - run =git mutate -m"repair the drone footage" -c /tmp/fix-drone-footage=
 
 We have now repaired the drone footage in situ, and have a history of
