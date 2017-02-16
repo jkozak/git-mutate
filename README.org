@@ -37,9 +37,10 @@ problem with the drone I am using and and there is a utility to fix it.
   #+BEGIN_SRC sh
   #!/bin/sh
   set -e
-  gcc -o ./djifix $GIT_MUTATE_WORKDIR/utils/src/djifix.c
-  ./djifix $GIT_MUTATE_WORKDIR/raw/drone.mp4
-  mv drone-fixed.h264 $GIT_MUTATE_WORKDIR/raw/drone.mp4
+  gcc -o ./djifix $GIT_MUTATE_WORK_TREE/utils/src/djifix.c
+  ./djifix $GIT_MUTATE_WORK_TREE/raw/drone.mp4
+  mv drone-fixed.h264 $GIT_MUTATE_WORK_TREE/raw/drone.mp4
+  ffmpeg -f h264 -i drone-fixed.h264 -vcodec copy -f mov $GIT_MUTATE_WORK_TREE/raw/drone.mp4
   #+END_SRC
 - run =git mutate -m"repair the drone footage" -c /tmp/fix-drone-footage=
 
@@ -50,13 +51,13 @@ what was done to achieve that.
 
 Put =git-mutate= somewhere on your path.
 
- =yarn= is required for testing.  Run tests with =make test= at the
+=yarn= is required for testing.  Run tests with =make test= at the
 top level.
 
 * Operation
 
- =git-mutate= runs a supplied command in a temporary directory, with an
-environment variable =GIT_MUTATE_WORKDIR= pointing to the working
+=git-mutate= runs a supplied command in a temporary directory, with an
+environment variable =GIT_MUTATE_WORK_TREE= pointing to the working
 directory.  If the command succeeds (RC=0) the working tree is
 committed with the script or command captured in the commit message.
 

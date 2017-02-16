@@ -36,8 +36,8 @@ Implementation
     echo testtesttest > "$DATADIR/repo/test"
 
     IMPLEMENTS GIVEN a mutation script that creates a file
-    echo '#!/bin/sh'                               > "$DATADIR/mutation"
-    echo 'echo xylema > $GIT_MUTATE_WORKDIR/file' >> "$DATADIR/mutation"
+    echo '#!/bin/sh'                                 > "$DATADIR/mutation"
+    echo 'echo xylema > $GIT_MUTATE_WORK_TREE/file' >> "$DATADIR/mutation"
     chmod +x "$DATADIR/mutation"
 
     IMPLEMENTS WHEN git-mutate runs the script

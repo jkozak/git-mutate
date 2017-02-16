@@ -71,7 +71,7 @@ $(cat $cmd0)
 "
 fi
 
-output=$(GIT_MUTATE_WORKDIR=$workdir sh -c $cmd)
+output=$(GIT_MUTATE_WORK_TREE=$workdir sh -c $cmd)
 rc=$?
 
 transcript="#+BEGIN_EXAMPLE
