@@ -84,6 +84,8 @@ inputs have changed.
 Have a shell mode which captures or blocks references to stuff outside
 the repo.
 
+If mutating a git-annex repo, lock all added/changed files.
+
 * Licence
 
 This software is licensed under the GNU Public Licence version 3.
