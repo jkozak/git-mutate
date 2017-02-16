@@ -39,7 +39,6 @@ problem with the drone I am using and and there is a utility to fix it.
   set -e
   gcc -o ./djifix $GIT_MUTATE_WORK_TREE/utils/src/djifix.c
   ./djifix $GIT_MUTATE_WORK_TREE/raw/drone.mp4
-  mv drone-fixed.h264 $GIT_MUTATE_WORK_TREE/raw/drone.mp4
   ffmpeg -f h264 -i drone-fixed.h264 -vcodec copy -f mov $GIT_MUTATE_WORK_TREE/raw/drone.mp4
   #+END_SRC
 - run =git mutate -m"repair the drone footage" -c /tmp/fix-drone-footage=
